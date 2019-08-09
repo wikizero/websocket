@@ -1,5 +1,5 @@
 
-body{
+body {
     text-align: center;
 }
 
@@ -7,19 +7,27 @@ body{
     width: 1000px;
     margin: 0 auto;
 }
-.uk-form{
+
+#text {
+    resize: none;
+}
+
+.uk-form {
     margin-top: 20px;
 }
+
 .uk-table {
     margin-top: 50px;
 }
+
 .uk-table th {
     text-align: center;
 }
 
-.uk-table tr td:nth-child(4)  {
-    width: 40%;
-    text-overflow:ellipsis;
+.uk-table tr td:nth-child(4) {
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #submit {

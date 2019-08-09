@@ -5,11 +5,13 @@
     <title>Title</title>
     <link href="static/css/uikit.min.css" rel="stylesheet" type="text/css">
     <link href="static/css/uikit.gradient.min.css" rel="stylesheet" type="text/css">
-    <link href="static/css/components/upload.min.css" rel="stylesheet" type="text/css">
+    <link href="static/css/components/upload.css" rel="stylesheet" type="text/css">
+    <link href="static/css/components/notify.css" rel="stylesheet" type="text/css">
     <link href="static/css/index.css" rel="stylesheet" type="text/css">
     <script src="/static/js/jquery-1.7.1.min.js"></script>
     <script src="/static/js/uikit.min.js"></script>
-    <script src="/static/js/components/upload.js"></script>
+    <script src="/static/js/components/upload.min.js"></script>
+    <script src="/static/js/components/notify.js"></script>
     <script src="/static/js/socket.io.js"></script>
     <script src="/static/js/index.js"></script>
 </head>
@@ -35,14 +37,14 @@
         (目前仅支持<10M的文件).
     </div>
     <div id="progressbar" class="uk-progress uk-hidden">
-        <div class="uk-progress-bar" style="width: 0%;">0%</div>
+        <div class="uk-progress-bar" style="width: 0;">0%</div>
     </div>
 
     <table class="uk-table">
         <caption>共享内容</caption>
         <thead>
         <tr>
-            <th>ip</th>
+            <th>from</th>
             <th>datetime</th>
             <th>type</th>
             <th>content</th>

@@ -23,16 +23,21 @@ socket_io = SocketIO(app)
 def listen():
     """"监听发送来的消息,并使用socketio向所有客户端发送消息"""
     mes = {"status": "unknown error"}
-    data = request.form.get('data')
-    print(data)
-    if data:
+    text = request.form.get('data')
+    file_obj = request.files.get('files')
+
+    if file_obj:
+        filename = file_obj.filename
+        file_obj.save('static/files/' + filename)
+        text = filename
+
+    if text:
         res = {
             'ip': request.headers.get('X-Real-Ip') or request.remote_addr,
             'datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'type': 'text',
-            'content': data
+            'type': 'file' if file_obj else 'text',
+            'content': text
         }
-        print(res)
         socket_io.emit(data=json.dumps(res), event="mes")
         mes['status'] = "success"
 
