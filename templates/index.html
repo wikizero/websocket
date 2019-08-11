@@ -27,6 +27,7 @@
         </div>
         <div class="uk-form-row">
             <button class="uk-button" type="button" id="submit">Submit</button>
+            <input type="text" id="input" placeholder="Message alias...">
         </div>
     </form>
 
@@ -44,6 +45,7 @@
         <caption>共享内容</caption>
         <thead>
         <tr>
+            <th>alias</th>
             <th>from</th>
             <th>datetime</th>
             <th>type</th>
@@ -52,6 +54,16 @@
         </tr>
         </thead>
         <tbody class="tbody">
+        {% for row in data %}
+        <tr>
+            <td>{{row.alias}}</td>
+            <td>{{row.from}}</td>
+            <td>{{row.datetime}}</td>
+            <td>{{row.type}}</td>
+            <td class="content">{{row.content}}</td>
+            <td id="copy" data-id="{{row.id}}"><a class="uk-icon-hover {% if row.type == 'file'%} uk-icon-download {% else %} uk-icon-clipboard {% endif %}"></a></td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
 

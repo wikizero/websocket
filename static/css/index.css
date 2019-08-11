@@ -24,10 +24,14 @@ body {
     text-align: center;
 }
 
-.uk-table tr td:nth-child(4) {
-    width: 50%;
+.uk-table tr td:nth-child(5) {
+    width: 40%;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+#input {
+    float: right;
 }
 
 #submit {

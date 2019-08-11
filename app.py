@@ -1,11 +1,13 @@
 import os
+import json
+
 from datetime import datetime
-from flask import Flask
+from flask import Flask, make_response, send_from_directory
 from flask import request
 # from flask_session import Session
 from flask import render_template
 from flask_socketio import SocketIO
-import json
+from db import DBHelper
 
 port = 8001
 secret_key = os.urandom(24)  # 生成密钥，为session服务。
@@ -24,6 +26,7 @@ def listen():
     """"监听发送来的消息,并使用socketio向所有客户端发送消息"""
     mes = {"status": "unknown error"}
     text = request.form.get('data')
+    alias = request.form.get('alias')
     file_obj = request.files.get('files')
 
     if file_obj:
@@ -32,13 +35,14 @@ def listen():
         text = filename
 
     if text:
-        res = {
-            'ip': request.headers.get('X-Real-Ip') or request.remote_addr,
-            'datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'type': 'file' if file_obj else 'text',
-            'content': text
-        }
-        socket_io.emit(data=json.dumps(res), event="mes")
+        _db = DBHelper()
+        _from = request.headers.get('X-Real-Ip') or request.remote_addr
+        _type = 'file' if file_obj else 'text'
+        _id = _db.insert([alias, _from, _type, text])
+        data = _db.select_by_id(_id)
+        data['alias'] = data['alias'] or data['id']
+        print(data)
+        socket_io.emit(data=json.dumps(data), event="mes")
         mes['status'] = "success"
 
     print(mes)
@@ -75,7 +79,24 @@ def login(mes):
 @app.route("/")
 def index():
     """主页面"""
-    return render_template("index.html")
+    # TODO 获取前10条
+    _db = DBHelper()
+    data = _db.select()
+    for row in data:
+        row['alias'] = row['alias'] or row['id']
+    return render_template("index.html", data=data)
+
+
+@app.route("/operation", methods=['get'])
+def operation():
+    """operation"""
+    _id = request.args.get('id')
+    _db = DBHelper()
+    data = _db.select_by_id(_id)
+    filename = data['content']
+    response = make_response(send_from_directory('static/files', filename, as_attachment=True))
+    response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('latin-1'))
+    return response
 
 
 if __name__ == '__main__':
