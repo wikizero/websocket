@@ -50,7 +50,7 @@ $(function () {
         console.log(resp.content);
         $("tbody").prepend(row);
         $("tbody tr:first-child .content").text(resp.content);
-        $("tbody tr:first-child #copy").attr('data-id', resp.id);
+        $("tbody tr:first-child #copy").attr({'data-id': resp.id, 'data-type': resp.type});
 
         icon = "uk-icon-clipboard"
         if (resp.type == "file") {
@@ -94,19 +94,18 @@ $(function () {
 
     $(document).on("click", '#copy', function () {
         var id = $(this).attr('data-id');
-        console.log(id)
-        $.get("/operation", {"id": id}, function (resp) {
-            // var resp = JSON.parse(resp);
-            // var status = resp['status'];
-            console.log(resp);
-            // if (status == "success") {
-            //     $("#text").val("");  // 清空输入内容
-            //     $("#input").val("");
-            // } else {
-            //     console.log(status);
-            // }
-        });
-        // copy_to_clipboard($(this).prev().text());
+        var type = $(this).attr('data-type');
+
+        if (type == "file") {
+            window.location = '/operation?id=' + id
+        } else if (type == "text") {
+            $.post("/operation", {"id": id}, function (resp) {
+                // copy_to_clipboard($(this).prev().text());
+                var resp = JSON.parse(resp);
+                console.log(resp.text);
+                copy_to_clipboard(resp.text);
+            });
+        }
     });
 
 });

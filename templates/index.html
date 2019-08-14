@@ -61,7 +61,7 @@
             <td>{{row.datetime}}</td>
             <td>{{row.type}}</td>
             <td class="content">{{row.content}}</td>
-            <td id="copy" data-id="{{row.id}}"><a class="uk-icon-hover {% if row.type == 'file'%} uk-icon-download {% else %} uk-icon-clipboard {% endif %}"></a></td>
+            <td id="copy" data-id="{{row.id}}" data-type="{{row.type}}"><a class="uk-icon-hover {% if row.type == 'file'%} uk-icon-download {% else %} uk-icon-clipboard {% endif %}"></a></td>
         </tr>
         {% endfor %}
         </tbody>

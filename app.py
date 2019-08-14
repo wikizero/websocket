@@ -41,7 +41,8 @@ def listen():
         _id = _db.insert([alias, _from, _type, text])
         data = _db.select_by_id(_id)
         data['alias'] = data['alias'] or data['id']
-        print(data)
+        text = data['content']
+        data['content'] = text[:40].strip() + '...' if len(text) >= 40 else text
         socket_io.emit(data=json.dumps(data), event="mes")
         mes['status'] = "success"
 
@@ -84,19 +85,32 @@ def index():
     data = _db.select()
     for row in data:
         row['alias'] = row['alias'] or row['id']
+        text = row['content']
+        row['content'] = text[:40].strip() + '...' if len(text) >= 40 else text
     return render_template("index.html", data=data)
 
 
-@app.route("/operation", methods=['get'])
+@app.route("/operation", methods=['get', 'POST'])
 def operation():
     """operation"""
-    _id = request.args.get('id')
-    _db = DBHelper()
-    data = _db.select_by_id(_id)
-    filename = data['content']
-    response = make_response(send_from_directory('static/files', filename, as_attachment=True))
-    response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('latin-1'))
-    return response
+    if request.method == 'GET':
+        _id = request.args.get('id')
+        if not _id:
+            return {'msg': 'error'}
+        _db = DBHelper()
+        data = _db.select_by_id(_id)
+        filename = data['content']
+        response = make_response(send_from_directory('static/files', filename, as_attachment=True))
+        response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('latin-1'))
+        return response
+
+    elif request.method == 'POST':
+        _id = request.form.get('id')
+        if not _id:
+            return {'msg': 'error'}
+        _db = DBHelper()
+        data = _db.select_by_id(_id)
+        return json.dumps({'text': data['content']})
 
 
 if __name__ == '__main__':
